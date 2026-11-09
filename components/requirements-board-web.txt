@@ -1,0 +1,10 @@
+# Actual tested Python 3.10 / AArch64 environment. Does not install RKLLama.
+Flask==2.3.2
+Werkzeug==3.1.9
+Jinja2==3.1.6
+MarkupSafe==3.0.4
+itsdangerous==2.2.0
+click==8.5.0
+transformers==4.57.6
+tokenizers==0.22.2
+huggingface-hub==0.35.1

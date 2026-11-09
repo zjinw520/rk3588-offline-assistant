@@ -1,0 +1,5 @@
+* text=auto eol=lf
+# Preserve the exact running-source snapshot, including its original newlines.
+components/** -text
+third_party/rockchip-1.3.0/include/rkllm.h -text
+third_party/rockchip-1.3.0/LICENSE -text

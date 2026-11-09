@@ -1,0 +1,9 @@
+QT += core network qml
+QT -= gui
+CONFIG += c++11 console warn_on
+CONFIG -= app_bundle
+TEMPLATE = app
+TARGET = systemui-wake-selftest
+DESTDIR = $$PWD/dist
+SOURCES += bridge.cpp selftest.cpp
+HEADERS += bridge.h

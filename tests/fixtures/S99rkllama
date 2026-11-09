@@ -1,0 +1,135 @@
+#!/bin/sh
+
+# Buildroot/SysV startup script for RKLLama and its local web UI.
+
+VENV="/userdata/rkllama-venv"
+RKLLAMA_DIR="/userdata/rkllama-lab/rkllama-83891fba4783dfe1dc93ce0168b8e826983c126e"
+MODELS_DIR="/userdata/rkllama-models"
+WEB_APP="/userdata/rkllama-web.py"
+RK_PID="/userdata/rkllama-lab/rkllama-server.pid"
+WEB_PID="/userdata/rkllama-web.pid"
+RK_LOG="/userdata/rkllama-lab/rkllama-server.log"
+WEB_LOG="/userdata/rkllama-web.log"
+
+export LD_LIBRARY_PATH="$RKLLAMA_DIR/src/rkllama/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+export PYTHONUNBUFFERED=1
+
+is_running() {
+    # RK3588_SERVICE_PID_IDENTITY_V1
+    pid_file="$1"
+    [ -r "$pid_file" ] || return 1
+    pid="$(cat "$pid_file" 2>/dev/null)"
+    case "$pid" in
+        ''|*[!0-9]*) return 1 ;;
+    esac
+    [ "$pid" -gt 1 ] 2>/dev/null || return 1
+    kill -0 "$pid" 2>/dev/null || return 1
+    case "$pid_file" in
+        "$RK_PID") expected="$VENV/bin/rkllama_server" ;;
+        "$WEB_PID") expected="$WEB_APP" ;;
+        *) return 1 ;;
+    esac
+    [ -r "/proc/$pid/cmdline" ] || return 1
+    tr '\0' '\n' < "/proc/$pid/cmdline" | grep -Fxq -- "$expected"
+}
+
+start_services() {
+    if is_running "$RK_PID"; then
+        echo "RKLLama already running (PID $(cat "$RK_PID"))"
+    else
+        echo "Starting RKLLama..."
+        cd "$RKLLAMA_DIR" || return 1
+        RKLLAMA_ENABLE_FREQ_TUNING=0 nohup \
+            "$VENV/bin/rkllama_server" \
+            --processor rk3588 \
+            --models "$MODELS_DIR" \
+            --port 8080 \
+            > "$RK_LOG" 2>&1 &
+        echo $! > "$RK_PID"
+        sleep 3
+        if ! is_running "$RK_PID"; then
+            echo "RKLLama failed to start; inspect $RK_LOG"
+            return 1
+        fi
+    fi
+
+    if is_running "$WEB_PID"; then
+        echo "RKLLama Web already running (PID $(cat "$WEB_PID"))"
+    else
+        echo "Starting RKLLama Web..."
+        nohup "$VENV/bin/python" "$WEB_APP" > "$WEB_LOG" 2>&1 &
+        echo $! > "$WEB_PID"
+        sleep 2
+        if ! is_running "$WEB_PID"; then
+            echo "RKLLama Web failed to start; inspect $WEB_LOG"
+            return 1
+        fi
+    fi
+
+    echo "RKLLama API: http://0.0.0.0:8080"
+    echo "RKLLama Web: http://0.0.0.0:8081"
+}
+
+stop_one() {
+    name="$1"
+    pid_file="$2"
+    if ! is_running "$pid_file"; then
+        echo "$name is not running"
+        rm -f "$pid_file"
+        return 0
+    fi
+
+    pid="$(cat "$pid_file")"
+    echo "Stopping $name (PID $pid)..."
+    kill "$pid" 2>/dev/null || true
+    count=0
+    while kill -0 "$pid" 2>/dev/null && [ "$count" -lt 10 ]; do
+        sleep 1
+        count=$((count + 1))
+    done
+    if kill -0 "$pid" 2>/dev/null; then
+        echo "$name did not stop within 10 seconds"
+        return 1
+    fi
+    rm -f "$pid_file"
+}
+
+stop_services() {
+    result=0
+    stop_one "RKLLama Web" "$WEB_PID" || result=1
+    stop_one "RKLLama" "$RK_PID" || result=1
+    return "$result"
+}
+
+show_status() {
+    if is_running "$RK_PID"; then
+        echo "RKLLama: running (PID $(cat "$RK_PID"))"
+    else
+        echo "RKLLama: stopped"
+    fi
+    if is_running "$WEB_PID"; then
+        echo "RKLLama Web: running (PID $(cat "$WEB_PID"))"
+    else
+        echo "RKLLama Web: stopped"
+    fi
+}
+
+case "$1" in
+    start)
+        start_services
+        ;;
+    stop)
+        stop_services
+        ;;
+    restart)
+        stop_services
+        start_services
+        ;;
+    status)
+        show_status
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart|status}"
+        exit 1
+        ;;
+esac

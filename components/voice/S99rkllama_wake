@@ -1,0 +1,17 @@
+#!/bin/sh
+# RK3588_DESKTOP_WAKE_SERVICE v0.7.0
+# This separate service leaves RKLLama, SystemUI and the native UI supervisor intact.
+
+PYTHON=/userdata/voice-venv/bin/python
+APP=/userdata/voice-assistant/desktop_wake.py
+
+case "$1" in
+    start) exec "$PYTHON" "$APP" --start ;;
+    stop) exec "$PYTHON" "$APP" --stop ;;
+    status) exec "$PYTHON" "$APP" --status ;;
+    restart)
+        "$PYTHON" "$APP" --stop || exit $?
+        exec "$PYTHON" "$APP" --start
+        ;;
+    *) echo "Usage: $0 {start|stop|restart|status}"; exit 1 ;;
+esac

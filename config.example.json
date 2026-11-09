@@ -1,0 +1,23 @@
+{
+  "format": 1,
+  "runtime": "vendor-local/librkllmrt.so",
+  "bridge": "build/liblocalai-rkllm130.so",
+  "models": [
+    {
+      "name": "qwen2-0.5b",
+      "path": "/path/to/qwen2-0.5b/model.rkllm",
+      "tokenizer": "/path/to/qwen2-0.5b/tokenizer",
+      "context": 1024,
+      "max_new_tokens": 256,
+      "temperature": 0.7
+    },
+    {
+      "name": "deepseek-r1-1.5b",
+      "path": "/path/to/deepseek-r1-1.5b/model.rkllm",
+      "tokenizer": "/path/to/deepseek-r1-1.5b/tokenizer",
+      "context": 1024,
+      "max_new_tokens": 256,
+      "temperature": 0.7
+    }
+  ]
+}

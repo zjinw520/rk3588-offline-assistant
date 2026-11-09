@@ -1,0 +1,3 @@
+# Actual tested Python 3.10 / AArch64 environment.
+numpy==1.26.4
+sherpa-onnx==1.13.8
