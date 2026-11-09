@@ -46,7 +46,7 @@
   libsystemuiwake.so           factory-bridge/preload 的构建产物
 
 /userdata/rkllama-web.py        components/web/web_service.py 的部署名称
-/userdata/rkllama-venv/         分词器、Flask；名称沿用，不要求 RKLLama 包
+/userdata/rkllama-venv/         历史环境路径，含分词器/Flask；新安装使用项目 .venv
 /userdata/voice-venv/           sherpa-onnx、NumPy
 ```
 
@@ -55,10 +55,10 @@
 已有部署按 BOARD_FIRST_CHECK → BOARD_NPU_TRIAL → BOARD_INSTALL 操作。
 这条路径已经实测，并保留原有界面、音频、原厂桌面和恢复点。
 
-空白镜像一键安装尚未完成实机回归。手动搭建时按以下顺序逐层验证：
+新用户按 [新手路线](START_HERE.md) 和分阶段教程搭建。空白镜像完整安装尚未完成实机回归，下面是布局概要：
 
 1. 确认声卡、屏幕、Wayland、音量键与 NPU 驱动。
-2. 准备本地模型、分词器和两个普通 Python 环境，只安装所需依赖，不安装 RKLLama 包。
+2. 准备本地模型、分词器和两个 Python 环境，分别安装文字/网页和语音依赖。
 3. 编译适配层并通过 doctor、隔离问答。现有迁移安装器要求旧 S99rkllama，不能直接用于空白系统。
 4. 按上表映射语音与网页源码，先前台验证 8080/8081，再设置服务。
 5. 在匹配 SDK 编译原生宿主和桥接，在板端检查 ldd 与隔离自检。

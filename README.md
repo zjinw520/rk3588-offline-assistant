@@ -3,17 +3,19 @@
 [![Python tests](https://github.com/zjinw520/rk3588-offline-assistant/actions/workflows/test.yml/badge.svg)](https://github.com/zjinw520/rk3588-offline-assistant/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/project%20code-MIT-blue.svg)](LICENSE)
 
-面向 RK3588 的本地文字与语音助手工程。独立模型服务直接调用 **Rockchip RKLLM Runtime**，使用 NPU 运行已经转换好的语言模型，无需 RKLLama Python 框架。
+面向 RK3588 的本地文字与语音助手工程。本项目独立编写模型服务、语音编排和应用界面，直接调用 **Rockchip RKLLM Runtime**，使用 NPU 运行已经转换好的语言模型。
 
-**v0.1.0 是面向开发者的实验版本。** 模型服务已在正点原子 ATK-DLRK3588 8GB 上实测；同时公开在用的语音、网页、Qt 界面和原厂桌面桥接源码。完整应用尚未提供空白系统一键安装，其他板卡需要适配。
+**v0.1.0 是实验版本。** 模型服务已在正点原子 ATK-DLRK3588 8GB 上实测；同时公开在用的语音、网页、Qt 界面和原厂桌面桥接源码。已提供分阶段搭建教程，完整空白系统安装仍待全流程实机回归，其他板卡需要适配。
 
 ## 从哪里开始
 
 | 你的情况 | 入口 |
 | --- | --- |
-| 第一次使用，先在板上跑文字问答 | **[独立模型服务入门](docs/QUICKSTART.md)**，不需要安装 RKLLama |
-| 已有本工程早期的 RKLLama 部署，想迁移后端 | [检查](docs/BOARD_FIRST_CHECK.md) → [隔离推理](docs/BOARD_NPU_TRIAL.md) → [安装与回退](docs/BOARD_INSTALL.md) |
-| 想复现语音、屏幕、原厂应用图标 | [应用布局与适配边界](docs/APPLICATION_LAYOUT.md)、[组件源码](components/README.md) |
+| 第一次使用，不知道下载和执行顺序 | **[新手从这里开始](docs/START_HERE.md)** |
+| 按阶段搭建完整助手 | [文字](docs/QUICKSTART.md) → [网页](docs/WEB_SETUP.md) → [语音](docs/VOICE_SETUP.md) → [桌面应用](docs/DESKTOP_SETUP.md) → [待唤醒与开机启动](docs/WAKE_AND_BOOT.md) |
+| 想了解“打开两秒消失”等问题如何解决 | [实际故障与修复记录](docs/TROUBLESHOOTING_HISTORY.md) |
+| 已有本工程历史部署，需要迁移后端 | [检查](docs/BOARD_FIRST_CHECK.md) → [隔离推理](docs/BOARD_NPU_TRIAL.md) → [安装与回退](docs/BOARD_INSTALL.md) |
+| 需要查部署路径和组件边界 | [应用布局](docs/APPLICATION_LAYOUT.md)、[组件源码](components/README.md) |
 | 准备外部文件 / 排查问题 | [模型与运行库](docs/MODELS.md)、[常见问题](docs/FAQ.md) |
 
 现成 [Linux AArch64 入门包](https://github.com/zjinw520/rk3588-offline-assistant/raw/refs/heads/main/packages/rk3588-offline-assistant-v0.1.0-aarch64.tar.gz) 含本项目编译的适配库；[校验值](packages/SHA256SUMS) 和源码一同公开。包内**没有模型、第三方运行库或 Python 环境**。

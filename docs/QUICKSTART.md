@@ -1,6 +1,6 @@
 # 独立模型服务入门
 
-目标：在 RK3588 板上用 NPU 回答一个文字问题。**不需要安装 RKLLama；本页不安装完整语音/Qt 应用。** 参考环境是 ATK-DLRK3588 8GB，其他镜像先核对 Python、glibc、RKNPU 驱动和动态库依赖。
+目标：在 RK3588 板上用 NPU 回答一个文字问题。本页部署本项目的独立模型服务。参考环境是 ATK-DLRK3588 8GB，其他镜像先核对 Python、glibc、RKNPU 驱动和动态库依赖。不确定从哪里开始时先看 [新手路线](START_HERE.md)。
 
 ## 1. 下载并传入开发板
 
@@ -39,7 +39,7 @@ python -m pip install -r requirements.txt
 
 ## 3. 外部文件与配置
 
-按 [模型与外部文件](MODELS.md) 准备本版固定的官方 RKLLM 1.3.0 AArch64 运行库、RK3588 W8A8 Qwen `.rkllm` 和匹配的完整本地分词器。系统没有 libgomp.so.1 时还需要取得兼容库。例如：
+按 [电脑下载步骤](MODEL_DOWNLOADS.md) 准备本版固定的官方 RKLLM 1.3.0 AArch64 运行库、RK3588 W8A8 Qwen `.rkllm` 和匹配的完整本地分词器。系统没有 libgomp.so.1 时还需要取得兼容库，解释见 [模型与外部文件](MODELS.md)。例如：
 
 ```text
 /userdata/local-ai-files/
@@ -94,7 +94,7 @@ python3 tools/chat.py --model qwen2-0.5b --question '请用一句话介绍你自
 ssh -L 18080:127.0.0.1:18080 root@<板子IP>
 ```
 
-随后电脑访问 http://127.0.0.1:18080/healthz，或在电脑用 Python 运行同一个 tools/chat.py。这是 API 服务，根路径没有聊天网页。完整网页/语音组件见 [应用布局](APPLICATION_LAYOUT.md)。
+随后电脑访问 http://127.0.0.1:18080/healthz，或在电脑用 Python 运行同一个 tools/chat.py。这是 API 服务，根路径没有聊天网页。文字问答通过后，按 [第二阶段网页教程](WEB_SETUP.md) 将后续应用连接到 8080，并启动 8081 网页。
 
 ## 5. 添加第二个模型
 
@@ -114,3 +114,5 @@ ssh -L 18080:127.0.0.1:18080 root@<板子IP>
 这是**数组中的一个对象，不是完整配置文件**。完整结构见根目录 config.example.json。R1 使用 deepseek-r1 开头的名称，以启用对应思考前缀处理。重新运行 doctor 和服务，用 `--model deepseek-r1-1.5b` 提问。CLI 展示原始文字，可能包含 `<think>`；语音组件另有过滤。增大输出上限会增加等待时间。
 
 本页不设置开机启动。旧部署迁移工具依赖特定历史目录；新用户不要直接执行 trial_board.py 或 install_backend.py。
+
+下一步：[网页问答](WEB_SETUP.md) → [语音对话](VOICE_SETUP.md) → [原生桌面应用](DESKTOP_SETUP.md) → [桌面待唤醒与开机启动](WAKE_AND_BOOT.md)。

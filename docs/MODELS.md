@@ -2,6 +2,8 @@
 
 仓库和入门包不附带外部模型、分词器、RKLLM Runtime、libgomp、Qt 或 sherpa-onnx。先在联网电脑下载，再传入板卡。失败时先检查 DNS、时间和证书信任，不要把空文件当模型。
 
+新手可直接按 [电脑下载与上传步骤](MODEL_DOWNLOADS.md) 准备一个模型、匹配分词器和固定运行库。下面解释文件作用与兼容要求。
+
 ## 固定运行库
 
 本版按官方 **Linux AArch64 RKLLM Runtime 1.3.0** 的固定文件开发，依据精确指纹核对 ABI，不是任意最新版均可使用。
@@ -16,6 +18,8 @@ Linux 用 sha256sum，Windows 用 Get-FileHash 核对。版本号相同而指纹
 
 libgomp.so.1 是 GNU OpenMP 运行库。优先用板卡系统或与板端 glibc 匹配的工具链产物。参考板 glibc 为 2.37；SDK 产物曾要求 GLIBC_2.38，不能加载。不要直接覆盖板上 libc；用 ldd 和 doctor 确认依赖。
 
+没有兼容库时，可参考 [libgomp 的官方候选文件与提取步骤](LIBGOMP.md)。该页明确记录静态检查范围，仍需板端验证。
+
 ## 已实测的语言模型
 
 | 配置名 | 文件 | 实测大小 |
@@ -27,7 +31,7 @@ libgomp.so.1 是 GNU OpenMP 运行库。优先用板卡系统或与板端 glibc 
 
 Qwen 既有来源为 [HanzoHuang/Qwen2-0.5B-Instruct-RKLLM](https://huggingface.co/HanzoHuang/Qwen2-0.5B-Instruct-RKLLM) 的 RK3588 目录。本仓库不保证社区文件未来可用性，不自动下载或重分发。
 
-DeepSeek 目前只记录实测本地文件名和大小，**尚未锁定可复核的社区转换文件下载地址**。已有文件可以复测；没有文件建议先跑通 Qwen，或按 [官方 RKLLM 示例](https://github.com/airockchip/rknn-llm/tree/878f9361fd3afa7e167b7079918918f78d2c1c2a/examples) 自行转换并记录版本。原始模型页面不是现成 .rkllm 下载链接。
+DeepSeek 转换产物来源为 [HanzoHuang/DeepSeek-R1-Distill-Qwen-1.5B-RKLLM](https://huggingface.co/HanzoHuang/DeepSeek-R1-Distill-Qwen-1.5B-RKLLM)。已补充固定修订与 SHA-256，见下载教程。自行转换可参考 [官方 RKLLM 示例](https://github.com/airockchip/rknn-llm/tree/878f9361fd3afa7e167b7079918918f78d2c1c2a/examples)，并记录工具版本。原始模型页面和转换产物页面用途不同。
 
 ## 分词器
 

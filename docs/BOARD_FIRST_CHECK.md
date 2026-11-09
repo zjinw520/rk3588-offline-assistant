@@ -27,7 +27,7 @@ python3 tools/prepare_board.py --runtime /userdata/rkllama-lab/rkllama-83891fba4
 准备成功标志：CANDIDATE_CONFIG_OK。
 检查成功标志：BOARD_PREFLIGHT_OK。
 把检查工具的完整输出保留，用来确认两个分词器、动态库和驱动状态。
-other_runtime_pids 出现旧 RKLLama 的 PID 在这轮是正常的；
+other_runtime_pids 出现旧模型服务的 PID 在这轮是正常的；
 实际推理前需要单独安排释放旧模型资源。
 
 配置默认读取 /userdata/rkllama-models 下已有的两个 Modelfile，

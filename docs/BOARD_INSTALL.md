@@ -24,7 +24,7 @@ python3 tools/install_backend.py
 
 成功标志为 INDEPENDENT_BACKEND_INSTALLED port=8080。
 8081 网页和 8082 原生窗口控制的接口地址不变。
-网页中保留的 RKLLama 字样属于迁移期间的旧命名，并不表示模型请求仍由旧框架执行。
+部分诊断字符串属于历史命名；当前模型请求由本项目独立服务执行。
 运行时以 /healthz 返回的 backend=local-ai-independent 及进程命令行判断。
 
 ## 服务与文件
@@ -37,7 +37,7 @@ python3 tools/install_backend.py
 - vendor-local：运行时复制到本机的官方库；不进入开源发布包。
 
 根目录及模型位置保持不变。服务当前复用 /userdata/rkllama-venv 中已安装的分词器依赖，
-不导入 RKLLama 包；后续可在整理完整发行版时迁移到单独命名的环境。
+不要求安装其他模型服务框架。新部署按分阶段教程使用 .venv 环境。
 
 ## 回退
 
@@ -51,5 +51,5 @@ python3 tools/install_backend.py --rollback /userdata/local-ai-candidate-v010/ba
 若安装后有人手动修改过启动脚本，会拒绝直接覆盖。
 回退会停止确切的新后端、恢复旧启动脚本并等待旧接口就绪；不会删除模型和分词器。
 
-本板已经实测回退到旧 RKLLama、再重新安装新后端。
+本板已经实测回退到旧模型服务、再重新安装独立后端。
 曾发现旧服务启动后就绪稍慢导致误报，已改为最长 30 秒等待，并补充回归测试。
